@@ -1,3 +1,4 @@
+require('dotenv').config()
 import express from 'express';
 const app = express();
 import path from 'path';
@@ -8,6 +9,8 @@ import routes from './routes'
 import { logger } from './middlewere/logger'
 import corsOptions from './config/corsOptions';
 import errorHandler from './middlewere/errorHandler';
+import userRoutes from './routes/userRoutes'
+import authRoutes from './routes/authRoutes'
 
 const port = 8000;
 
@@ -15,10 +18,11 @@ app.use(logger)
 
 app.use('/', express.static(path.join(__dirname, 'public')))
 app.use(express.json());
-
 app.use(cors(corsOptions));
-
 app.use(cookieParser())
+
+app.use('/api/users', userRoutes)
+app.use('/api/auth', authRoutes)
 app.use('/api', routes)
 
 app.all('*', (req, res) => {
